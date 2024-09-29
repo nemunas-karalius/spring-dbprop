@@ -1,0 +1,13 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: sample
+    environment:
+      MYSQL_DATABASE: 'sample'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    volumes:
+      - sample-db:/var/lib/mysql
+volumes:
+  sample-db:

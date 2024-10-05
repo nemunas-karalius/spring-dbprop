@@ -7,18 +7,21 @@ import org.apache.commons.configuration2.builder.BasicConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.spring.ConfigurationPropertySource;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 
 import javax.sql.DataSource;
 
+@ConditionalOnProperty(name = "spring.properties.db.source.impl", havingValue = "apache-commons")
 @Configuration
 @RequiredArgsConstructor
-public class DbPropertiesConfiguration {
+public class ApacheCommonsDbPropertiesConfiguration {
 
     private final ConfigurableEnvironment env;
     private final DataSource dataSource;
+    private final DbPropertySourceProperties dbSourceProperties;
 
     /**
      * Adding of property sources in @PostConstruct copied from https://gist.github.com/jeffsheets/8ab5f3aeb74787bdb051
@@ -38,6 +41,7 @@ public class DbPropertiesConfiguration {
      */
     @PostConstruct
     public void initializeDatabasePropertySourceUsage() {
+        dbSourceProperties.validate();
         MutablePropertySources propertySources = env.getPropertySources();
 
         try {
@@ -45,9 +49,9 @@ public class DbPropertiesConfiguration {
             builder.configure(
                     new Parameters().database()
                             .setDataSource(dataSource)
-                            .setTable("properties")
-                            .setKeyColumn("id")
-                            .setValueColumn("val")
+                            .setTable(dbSourceProperties.getTableName())
+                            .setKeyColumn(dbSourceProperties.getKeyColumn())
+                            .setValueColumn(dbSourceProperties.getValueColumn())
             );
             DatabaseConfiguration config = builder.getConfiguration();
             propertySources.addFirst(new ConfigurationPropertySource("db", config));

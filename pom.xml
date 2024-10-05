@@ -55,7 +55,10 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- TODO: maybe implement using JPA (should be simple with hibernate autoconfig?) -->
+		<!--
+		commons-configurations2 and commons-beanutils are used by ApacheCommonsDbPropertiesConfiguration.
+		Not required if application uses JdbcDbPropertiesConfiguration only.
+		 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-configuration2</artifactId>

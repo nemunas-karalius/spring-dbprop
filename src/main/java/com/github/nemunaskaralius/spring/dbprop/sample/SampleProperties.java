@@ -14,6 +14,7 @@ import java.time.Duration;
 public class SampleProperties {
     private String someString = "test";
     private int someInt = 1;
+    private int[] arrayOfInt;
     private final Connection connection = new Connection();
 
     @Data
